@@ -500,121 +500,124 @@ var main = (function($) { var _ = {
 	 */
 	switchTo: function(index, noHide) {
 
-		// Already at index and xsmall isn't active? Bail.
+		try{
+			// Already at index and xsmall isn't active? Bail.
 			if (_.current == index
-			&&	!breakpoints.active('<=xsmall'))
+				&& !breakpoints.active('<=xsmall'))
 				return;
 
-		// Locked? Bail.
+			// Locked? Bail.
 			if (_.locked)
 				return;
 
-		// Lock.
+			// Lock.
 			_.locked = true;
 
-		// Hide main wrapper if medium is active.
+			// Hide main wrapper if medium is active.
 			if (!noHide
-			&&	breakpoints.active('<=medium'))
+				&& breakpoints.active('<=medium'))
 				_.hide();
 
-		// Get slides.
-			var	oldSlide = (_.current !== null ? _.slides[_.current] : null),
+			// Get slides.
+			var oldSlide = (_.current !== null ? _.slides[_.current] : null),
 				newSlide = _.slides[index];
 
-		// Update current.
+			// Update current.
 			_.current = index;
 
-		// Deactivate old slide (if there is one).
+			// Deactivate old slide (if there is one).
 			if (oldSlide) {
 
 				// Thumbnail.
-					oldSlide.$parent
-						.removeClass('active');
+				oldSlide.$parent
+					.removeClass('active');
 
 				// Slide.
-					oldSlide.$slide.removeClass('active');
+				oldSlide.$slide.removeClass('active');
 
 			}
 
-		// Activate new slide.
+			// Activate new slide.
 
 			// Thumbnail.
-				newSlide.$parent
-					.addClass('active')
-					.focus();
+			newSlide.$parent
+				.addClass('active')
+				.focus();
 
 			// Slide.
-				var f = function() {
+			var f = function () {
 
-					// Old slide exists? Detach it.
-						if (oldSlide)
-							oldSlide.$slide.detach();
+				// Old slide exists? Detach it.
+				if (oldSlide)
+					oldSlide.$slide.detach();
 
-					// Attach new slide.
-						newSlide.$slide.appendTo(_.$viewer);
+				// Attach new slide.
+				newSlide.$slide.appendTo(_.$viewer);
 
-					// New slide not yet loaded?
-						if (!newSlide.loaded) {
+				// New slide not yet loaded?
+				if (!newSlide.loaded) {
 
-							window.setTimeout(function() {
+					window.setTimeout(function () {
 
-								// Mark as loading.
-									newSlide.$slide.addClass('loading');
+						// Mark as loading.
+						newSlide.$slide.addClass('loading');
 
-								// Wait for it to load.
-									$('<img src="' + newSlide.url + '" />').on('load', function() {
-									//window.setTimeout(function() {
+						// Wait for it to load.
+						$('<img src="' + newSlide.url + '" />').on('load', function () {
+							//window.setTimeout(function() {
 
-										// Set background image.
-											newSlide.$slideImage
-												.css('background-image', 'url(' + newSlide.url + ')');
+							// Set background image.
+							newSlide.$slideImage
+								.css('background-image', 'url(' + newSlide.url + ')');
 
-										// Mark as loaded.
-											newSlide.loaded = true;
-											newSlide.$slide.removeClass('loading');
+							// Mark as loaded.
+							newSlide.loaded = true;
+							newSlide.$slide.removeClass('loading');
 
-										// Mark as active.
-											newSlide.$slide.addClass('active');
+							// Mark as active.
+							newSlide.$slide.addClass('active');
 
-										// Unlock.
-											window.setTimeout(function() {
-												_.locked = false;
-											}, 100);
-
-									//}, 1000);
-									});
-
+							// Unlock.
+							window.setTimeout(function () {
+								_.locked = false;
 							}, 100);
 
-						}
+							//}, 1000);
+						});
 
-					// Otherwise ...
-						else {
+					}, 100);
 
-							window.setTimeout(function() {
+				}
 
-								// Mark as active.
-									newSlide.$slide.addClass('active');
+				// Otherwise ...
+				else {
 
-								// Unlock.
-									window.setTimeout(function() {
-										_.locked = false;
-									}, 100);
+					window.setTimeout(function () {
 
-							}, 100);
+						// Mark as active.
+						newSlide.$slide.addClass('active');
 
-						}
+						// Unlock.
+						window.setTimeout(function () {
+							_.locked = false;
+						}, 100);
 
-				};
+					}, 100);
 
-				// No old slide? Switch immediately.
-					if (!oldSlide)
-						(f)();
+				}
 
-				// Otherwise, wait for old slide to disappear first.
-					else
-						window.setTimeout(f, _.settings.slideDuration);
+			};
 
+			// No old slide? Switch immediately.
+			if (!oldSlide)
+				(f)();
+
+			// Otherwise, wait for old slide to disappear first.
+			else
+				window.setTimeout(f, _.settings.slideDuration);
+	}catch(e){
+
+		}
 	},
 
 	/**

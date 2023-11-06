@@ -1,4 +1,6 @@
 import { Component, OnInit } from '@angular/core';
+import { ProductDto } from '../interfaces/product.dto';
+import { ProductsService } from '../services/products.service';
 
 @Component({
   selector: 'app-root',
@@ -7,9 +9,23 @@ import { Component, OnInit } from '@angular/core';
 })
 export class AppComponent implements OnInit{
   title = 'pameVentasFront';
+  products: ProductDto[] = [];
+  loading = true;
+
+  constructor(private productsService: ProductsService) {
+  }
 
   ngOnInit(){
+    this.getProducts();
+  }
+
+  getProducts(){
     this.loadScript();
+    const sub = this.productsService.getProducts().subscribe(r=> {
+      this.products = r.data as ProductDto[];
+      this.loading = false;
+      setTimeout(this.loadScript, 1);
+    })
   }
 
   loadScript() {
