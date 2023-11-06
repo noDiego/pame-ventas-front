@@ -4,9 +4,11 @@
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
-    "build": "ng build",
+    "build": "ng build && npm run copy-dist",
     "watch": "ng build --watch --configuration development",
-    "test": "ng test"
+    "test": "ng test",
+    "clean-build": "rimraf ./build/*",
+    "copy-dist": "npm run clean-build && ncp ./dist/pame-ventas-front ./build"
   },
   "private": true,
   "dependencies": {
@@ -33,6 +35,8 @@
     "karma-coverage": "~2.2.0",
     "karma-jasmine": "~5.1.0",
     "karma-jasmine-html-reporter": "~2.1.0",
+    "ncp": "^2.0.0",
+    "rimraf": "^5.0.5",
     "typescript": "~5.1.3"
   }
 }
